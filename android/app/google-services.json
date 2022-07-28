@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "968339099255",
+    "project_id": "ktoys-50445",
+    "storage_bucket": "ktoys-50445.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:968339099255:android:8b564f4e18faf67e0e8072",
+        "android_client_info": {
+          "package_name": "com.example.ktoys"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "968339099255-70jcv8jaogb9q3p92fb1gsl785s5v8jk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ktoys",
+            "certificate_hash": "c541efbbe87cb9f240be69995796a65df80c77ac"
+          }
+        },
+        {
+          "client_id": "968339099255-skkp3vtt519nr04ldrrn6j0sujjemjsv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHWDOdxEPzURc0CvMrQ7aAzm0r02tuxN4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "968339099255-skkp3vtt519nr04ldrrn6j0sujjemjsv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
