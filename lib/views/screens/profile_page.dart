@@ -18,8 +18,8 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MainAppBar(
-        cartValue: 2,
-        chatValue: 2,
+        cartValue: 0,
+        chatValue: 0,
       ),
       body: ListView(
         shrinkWrap: true,
@@ -94,7 +94,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
                 // MenuTileWidget(
-                //   onTap: () {},
+                //   onTap: (){},
                 //   icon: SvgPicture.asset(
                 //     'assets/icons/Show.svg',
                 //     color: AppColor.secondary.withOpacity(0.5),
@@ -123,11 +123,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   onTap: (){},
                   child: MenuTileWidget(
                     icon: SvgPicture.asset(
-                      'assets/icons/Location.svg',
+                      'assets/icons/Profile.svg',
                       color: AppColor.secondary.withOpacity(0.5),
                     ),
-                    title: 'Alamat',
-                    subtitle: 'Informasi alamat rumah anda',
+                    title: 'Edit Profile',
+                    subtitle: 'Mengubah detail informasi pengguna',
                   ),
                 ),
               ],

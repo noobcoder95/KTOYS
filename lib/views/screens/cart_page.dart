@@ -332,7 +332,7 @@ class _CartPageState extends State<CartPage> {
                             children: [
                               Container(
                                 margin: EdgeInsets.only(right: 12),
-                                child: SvgPicture.asset('assets/icons/Home.svg', width: 18),
+                                child: SvgPicture.asset('assets/icons/Location.svg', width: 18),
                               ),
                               Expanded(
                                 child: Text(
@@ -352,7 +352,7 @@ class _CartPageState extends State<CartPage> {
                             children: [
                               Container(
                                 margin: EdgeInsets.only(right: 12),
-                                child: SvgPicture.asset('assets/icons/Profile.svg', width: 18),
+                                child: SvgPicture.asset('assets/icons/Call.svg', width: 18),
                               ),
                               Expanded(
                                 child: Text(
@@ -395,8 +395,8 @@ class _CartPageState extends State<CartPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text('Pilih Metode Pengiriman', style: TextStyle(color: AppColor.secondary.withOpacity(0.7), fontSize: 10)),
-                                  Text('Detail Pengiriman', style: TextStyle(color: AppColor.secondary, fontWeight: FontWeight.w600, fontFamily: 'poppins')),
+                                  Text('Detail Pemesanan', style: TextStyle(color: AppColor.secondary.withOpacity(0.7), fontSize: 10)),
+                                  Text('Pengiriman', style: TextStyle(color: AppColor.secondary, fontWeight: FontWeight.w600, fontFamily: 'poppins')),
                                 ],
                               ),
                               Text('Gratis', style: TextStyle(color: AppColor.primary, fontWeight: FontWeight.w600)),

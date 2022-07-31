@@ -7,7 +7,6 @@ import 'notification_page.dart';
 class InfoKtoys extends StatefulWidget {
   @override
   _InfoKtoysState createState() => _InfoKtoysState();
-
 }
 class _InfoKtoysState extends State<InfoKtoys> {
   @override

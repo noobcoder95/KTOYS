@@ -18,8 +18,8 @@ class _NotificationPageState extends State<NotificationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MainAppBar(
-        cartValue: 2,
-        chatValue: 2,
+        cartValue: 0,
+        chatValue: 0,
       ),
       body: ListView(
         shrinkWrap: true,
