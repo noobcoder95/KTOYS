@@ -9,7 +9,7 @@ import 'package:marketky/views/screens/welcome_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
-String? namaLengkap, namaPengguna, alamatLengkap, tipeAkun;
+String? namaLengkap, namaPengguna, alamatLengkap, tipeAkun, nomorTelepon, alamatEmail, fotoProfil;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +20,9 @@ Future<void> main() async {
   namaLengkap = preferences.getString('namaLengkap');
   alamatLengkap = preferences.getString('alamatLengkap');
   tipeAkun = preferences.getString('tipeAkun');
+  nomorTelepon = preferences.getString('nomorTelepon');
+  alamatEmail = preferences.getString('alamatEmail');
+  fotoProfil = preferences.getString('fotoProfil');
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -41,9 +44,9 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         fontFamily: 'Nunito',
       ),
-      home: auth.currentUser != null && auth.currentUser!.uid != 'Je9hfwGkGDVOMX4q6N6pwu5L4Q23' ?
+      home: auth.currentUser != null && auth.currentUser!.uid != 'ykRHnUnEOJS554UoeyvLSeciQRt1' ?
       HomePage() :
-      auth.currentUser != null && auth.currentUser!.uid == 'Je9hfwGkGDVOMX4q6N6pwu5L4Q23' ?
+      auth.currentUser != null && auth.currentUser!.uid == 'ykRHnUnEOJS554UoeyvLSeciQRt1' ?
       DashboardPage() :
       WelcomePage(),
     );

@@ -32,52 +32,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState()
   {
-    //initialization();
     super.initState();
   }
-
-  /*
-  void initialization()
-  {
-    FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid).get().then((snapshot) async {
-      SharedPreferences preferences = await SharedPreferences.getInstance();
-      if (snapshot.exists)
-      {
-        DataPengguna _data = DataPengguna.fromDocument(snapshot);
-        if(_data.tipeAkun.isNotEmpty && _data.alamatLengkap.isNotEmpty && _data.namaPengguna.isNotEmpty && _data.namaLengkap.isNotEmpty)
-        {
-          preferences.setString('namaPengguna', _data.namaPengguna);
-          preferences.setString('namaLengkap', _data.namaLengkap);
-          preferences.setString('alamatLengkap', _data.alamatLengkap);
-          preferences.setString('tipeAkun', 'Pembeli');
-          setState(() {
-            namaPengguna = _data.namaPengguna;
-            namaLengkap = _data.namaLengkap;
-            alamatLengkap = _data.alamatLengkap;
-            tipeAkun = _data.tipeAkun;
-          });
-        }
-        else
-        {
-          preferences.clear();
-          if(mounted)
-          {
-            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => RegisterPage()), (Route<dynamic> route) => false);
-          }
-        }
-      }
-      else
-      {
-        preferences.clear();
-        if(mounted)
-        {
-          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => RegisterPage()), (Route<dynamic> route) => false);
-        }
-      }
-    });
-  }
-  */
-
 
   @override
   Widget build(BuildContext context) {

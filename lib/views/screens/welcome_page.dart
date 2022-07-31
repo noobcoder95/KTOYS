@@ -92,18 +92,24 @@ class _WelcomePage extends State<WelcomePage>{
                             namaLengkap = _data.namaLengkap;
                             alamatLengkap = _data.alamatLengkap;
                             tipeAkun = _data.tipeAkun;
+                            nomorTelepon = _data.nomorTelepon;
+                            alamatEmail = auth.currentUser!.email ?? '';
+                            fotoProfil = auth.currentUser!.photoURL ?? '';
 
                             pref.setString('namaPengguna', _data.namaPengguna);
                             pref.setString('namaLengkap', _data.namaLengkap);
                             pref.setString('alamatLengkap', _data.alamatLengkap);
                             pref.setString('tipeAkun', _data.tipeAkun);
+                            pref.setString('nomorTelepon', _data.nomorTelepon);
+                            pref.setString('alamatEmail', auth.currentUser!.email ?? '');
+                            pref.setString('fotoProfil', auth.currentUser!.photoURL ?? '');
 
                             if(mounted)
                             {
                               setState(() {
                                 _isSigningIn = false;
                               });
-                              if(user.uid == 'Je9hfwGkGDVOMX4q6N6pwu5L4Q23')
+                              if(user.uid == 'ykRHnUnEOJS554UoeyvLSeciQRt1')
                               {
                                 Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => DashboardPage()));
                               }

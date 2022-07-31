@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:marketky/constant/app_color.dart';
 import 'package:marketky/main.dart';
+import 'package:marketky/views/screens/edit_profile.dart';
 import 'package:marketky/views/widgets/main_app_bar_widget.dart';
 import 'package:marketky/views/widgets/menu_tile_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -120,7 +121,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 //   subtitle: '',
                 // ),
                 GestureDetector(
-                  onTap: (){},
+                  onTap: (){
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => EditProfile()));
+                  },
                   child: MenuTileWidget(
                     icon: SvgPicture.asset(
                       'assets/icons/Profile.svg',

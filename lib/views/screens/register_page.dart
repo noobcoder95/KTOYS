@@ -20,7 +20,8 @@ class _LoginPageState extends State<RegisterPage> {
   TextEditingController
   _namaLengkap = TextEditingController(),
   _namaPengguna = TextEditingController(),
-  _alamatLengkap = TextEditingController();
+  _alamatLengkap = TextEditingController(),
+  _nomorTelepon = TextEditingController();
 
 
   @override
@@ -126,7 +127,6 @@ class _LoginPageState extends State<RegisterPage> {
             ),
           ),
           SizedBox(height: 16),
-          // Username
           TextField(
             controller: _namaPengguna,
             autofocus: false,
@@ -151,7 +151,6 @@ class _LoginPageState extends State<RegisterPage> {
           ),
 
           SizedBox(height: 16),
-          // Email
           TextField(
             controller: _alamatLengkap,
             autofocus: false,
@@ -160,6 +159,31 @@ class _LoginPageState extends State<RegisterPage> {
               prefixIcon: Container(
                 padding: EdgeInsets.all(12),
                 child: SvgPicture.asset('assets/icons/Location.svg', color: AppColor.primary),
+              ),
+              contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppColor.border, width: 1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppColor.primary, width: 1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              fillColor: AppColor.primarySoft,
+              filled: true,
+            ),
+          ),
+
+          SizedBox(height: 16),
+          TextField(
+            controller: _nomorTelepon,
+            autofocus: false,
+            keyboardType: TextInputType.phone,
+            decoration: InputDecoration(
+              hintText: 'Nomor Telepon',
+              prefixIcon: Container(
+                padding: EdgeInsets.all(12),
+                child: SvgPicture.asset('assets/icons/Call.svg', color: AppColor.primary),
               ),
               contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 14),
               enabledBorder: OutlineInputBorder(
@@ -239,28 +263,37 @@ class _LoginPageState extends State<RegisterPage> {
           ElevatedButton(
             onPressed: () async{
               SharedPreferences preferences = await SharedPreferences.getInstance();
-              if(_namaLengkap.value.text.isNotEmpty && _namaPengguna.value.text.isNotEmpty && _alamatLengkap.value.text.isNotEmpty)
+              if(_namaLengkap.value.text.isNotEmpty && _namaPengguna.value.text.isNotEmpty && _alamatLengkap.value.text.isNotEmpty && _nomorTelepon.value.text.isNotEmpty)
               {
                 FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid).set(
                     {
                       'namaPengguna': _namaPengguna.value.text,
                       'namaLengkap': _namaLengkap.value.text,
                       'alamatLengkap': _alamatLengkap.value.text,
-                      'tipeAkun': auth.currentUser!.uid != 'Je9hfwGkGDVOMX4q6N6pwu5L4Q23' ? 'Pembeli' : 'Penjual'
+                      'nomorTelepon': _nomorTelepon.value.text,
+                      'alamatEmail': auth.currentUser!.email ?? '',
+                      'fotoProfil': auth.currentUser!.photoURL ?? '',
+                      'tipeAkun': auth.currentUser!.uid != 'ykRHnUnEOJS554UoeyvLSeciQRt1' ? 'Pembeli' : 'Penjual'
                     }).then((_) async {
 
                       preferences.setString('namaPengguna', _namaPengguna.value.text);
                       preferences.setString('namaLengkap', _namaLengkap.value.text);
                       preferences.setString('alamatLengkap', _alamatLengkap.value.text);
-                      preferences.setString('tipeAkun', auth.currentUser!.uid != 'Je9hfwGkGDVOMX4q6N6pwu5L4Q23' ? 'Pembeli' : 'Penjual');
+                      preferences.setString('nomorTelepon', _nomorTelepon.value.text);
+                      preferences.setString('alamatEmail', auth.currentUser!.email ?? '');
+                      preferences.setString('fotoProfil', auth.currentUser!.photoURL ?? '');
+                      preferences.setString('tipeAkun', auth.currentUser!.uid != 'ykRHnUnEOJS554UoeyvLSeciQRt1' ? 'Pembeli' : 'Penjual');
                       setState(() {
                         namaPengguna = _namaPengguna.value.text;
                         namaLengkap = _namaLengkap.value.text;
                         alamatLengkap = _alamatLengkap.value.text;
-                        tipeAkun = auth.currentUser!.uid != 'Je9hfwGkGDVOMX4q6N6pwu5L4Q23' ? 'Pembeli' : 'Penjual';
+                        nomorTelepon = _nomorTelepon.value.text;
+                        alamatEmail = auth.currentUser!.email ?? '';
+                        fotoProfil = auth.currentUser!.photoURL ?? '';
+                        tipeAkun = auth.currentUser!.uid != 'ykRHnUnEOJS554UoeyvLSeciQRt1' ? 'Pembeli' : 'Penjual';
                       });
 
-                      if(auth.currentUser!.uid == 'Je9hfwGkGDVOMX4q6N6pwu5L4Q23')
+                      if(auth.currentUser!.uid == 'ykRHnUnEOJS554UoeyvLSeciQRt1')
                       {
                         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => DashboardPage()));
                       }

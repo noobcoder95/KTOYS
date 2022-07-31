@@ -66,8 +66,8 @@ class _CartPageState extends State<CartPage> {
                   'date_time': timestamp,
                 }).then((value) => null);
               }
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderSuccessPage()));
             }
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderSuccessPage()));
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -112,6 +112,7 @@ class _CartPageState extends State<CartPage> {
 
               if(carts.length < 1)
               {
+                totalHarga = 0;
                 for(int i = 0; i < length; i++)
                 {
                   carts.add(Cart.fromJson(snapshot.data!.docs[i]));
@@ -133,7 +134,7 @@ class _CartPageState extends State<CartPage> {
                     itemBuilder: (context, index) {
                       return Container(
                         width: MediaQuery.of(context).size.width,
-                        height: 80,
+                        height: 85,
                         padding: EdgeInsets.only(top: 5, left: 5, bottom: 5, right: 12),
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -192,6 +193,12 @@ class _CartPageState extends State<CartPage> {
                                                   if(carts[index].stocks > 1)
                                                   {
                                                     FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid).collection('Keranjang').doc(carts[index].id).update({'stocks': carts[index].stocks - 1}).then((value) => setState(() {
+                                                      carts = [];
+                                                    }));
+                                                  }
+                                                  else
+                                                  {
+                                                    FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid).collection('Keranjang').doc(carts[index].id).delete().then((value) => setState((){
                                                       carts = [];
                                                     }));
                                                   }
@@ -356,7 +363,7 @@ class _CartPageState extends State<CartPage> {
                               ),
                               Expanded(
                                 child: Text(
-                                  auth.currentUser!.phoneNumber ?? '0851-5855-1280 ',
+                                  nomorTelepon ?? '-',
                                   style: TextStyle(
                                     color: AppColor.secondary.withOpacity(0.7),
                                   ),
@@ -551,9 +558,10 @@ class _CartPageState extends State<CartPage> {
         harga = harga + (carts[i].price * carts[i].stocks);
       }
       totalHarga = harga;
-      Future.delayed(Duration(seconds: 1), (){
-        setState(() {});
-      });
     }
+
+    Future.delayed(Duration(seconds: 1), (){
+      setState(() {});
+    });
   }
 }
