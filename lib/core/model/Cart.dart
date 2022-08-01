@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Cart {
   List image;
-  String name, id;
+  String name, id, productId;
   int timestamp, price, stocks;
 
   Cart({
@@ -12,15 +12,22 @@ class Cart {
     required this.name,
     required this.price,
     required this.stocks,
+    required this.productId
   });
 
   factory Cart.fromJson(DocumentSnapshot doc) {
     List image = [];
-    String name = '';
+    String name = '', productId = '';
     int price = 0, timestamp = 0, stocks = 0;
     try
     {
       image = doc.get('image');
+    }
+    catch(e)
+    {}
+    try
+    {
+      productId = doc.get('productId');
     }
     catch(e)
     {}
@@ -49,6 +56,7 @@ class Cart {
     catch(e)
     {}
     return Cart(
+      productId: productId,
       timestamp: timestamp,
       id: doc.id,
       image: image,

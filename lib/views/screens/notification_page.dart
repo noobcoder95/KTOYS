@@ -7,6 +7,7 @@ import 'package:marketky/views/widgets/main_app_bar_widget.dart';
 
 import '../../main.dart';
 import 'info_ktoys.dart';
+import 'order_history.dart';
 
 class NotificationPage extends StatefulWidget {
   @override
@@ -104,7 +105,7 @@ class _NotificationPageState extends State<NotificationPage> {
                         return ListView.builder(
                           itemBuilder: (context, index) {
                             return GestureDetector(
-                              onTap: (){},
+                              onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderPage())),
                               child: Container(
                                 width: MediaQuery.of(context).size.width,
                                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -148,7 +149,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                               Container(
                                                 margin: EdgeInsets.only(left: 10),
                                                 child: Text(
-                                                  '${notifs[index].dateTime}',
+                                                  '${notifs[index].dateTime.toString().split('.')[0]}',
                                                   style: TextStyle(color: AppColor.secondary.withOpacity(0.7), fontSize: 12),
                                                 ),
                                               ),

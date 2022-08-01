@@ -273,7 +273,7 @@ class _LoginPageState extends State<RegisterPage> {
                       'nomorTelepon': _nomorTelepon.value.text,
                       'alamatEmail': auth.currentUser!.email ?? '',
                       'fotoProfil': auth.currentUser!.photoURL ?? '',
-                      'tipeAkun': auth.currentUser!.uid != 'ykRHnUnEOJS554UoeyvLSeciQRt1' ? 'Pembeli' : 'Penjual'
+                      'tipeAkun': auth.currentUser!.uid != 'Je9hfwGkGDVOMX4q6N6pwu5L4Q23' ? 'Pembeli' : 'Penjual'
                     }).then((_) async {
 
                       preferences.setString('namaPengguna', _namaPengguna.value.text);
@@ -282,7 +282,7 @@ class _LoginPageState extends State<RegisterPage> {
                       preferences.setString('nomorTelepon', _nomorTelepon.value.text);
                       preferences.setString('alamatEmail', auth.currentUser!.email ?? '');
                       preferences.setString('fotoProfil', auth.currentUser!.photoURL ?? '');
-                      preferences.setString('tipeAkun', auth.currentUser!.uid != 'ykRHnUnEOJS554UoeyvLSeciQRt1' ? 'Pembeli' : 'Penjual');
+                      preferences.setString('tipeAkun', auth.currentUser!.uid != 'Je9hfwGkGDVOMX4q6N6pwu5L4Q23' ? 'Pembeli' : 'Penjual');
                       setState(() {
                         namaPengguna = _namaPengguna.value.text;
                         namaLengkap = _namaLengkap.value.text;
@@ -290,10 +290,10 @@ class _LoginPageState extends State<RegisterPage> {
                         nomorTelepon = _nomorTelepon.value.text;
                         alamatEmail = auth.currentUser!.email ?? '';
                         fotoProfil = auth.currentUser!.photoURL ?? '';
-                        tipeAkun = auth.currentUser!.uid != 'ykRHnUnEOJS554UoeyvLSeciQRt1' ? 'Pembeli' : 'Penjual';
+                        tipeAkun = auth.currentUser!.uid != 'Je9hfwGkGDVOMX4q6N6pwu5L4Q23' ? 'Pembeli' : 'Penjual';
                       });
 
-                      if(auth.currentUser!.uid == 'ykRHnUnEOJS554UoeyvLSeciQRt1')
+                      if(auth.currentUser!.uid == 'Je9hfwGkGDVOMX4q6N6pwu5L4Q23')
                       {
                         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => DashboardPage()));
                       }

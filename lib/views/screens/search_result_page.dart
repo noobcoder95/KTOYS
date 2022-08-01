@@ -136,12 +136,12 @@ class _SearchResultPageState extends State<SearchResultPage> with TickerProvider
 
                         for(int i = 0; i < length; i++)
                         {
-                          Product product = Product.fromJson(snapshot.data!.docs[i]);
+                          Product product = Product.fromDocument(snapshot.data!.docs[i]);
                           print(product.name);
                           print(product.storeName);
                           if(product.name.toLowerCase().contains(searchInputController.value.text.toLowerCase()) || product.storeName.toLowerCase().contains(searchInputController.value.text.toLowerCase()))
                           {
-                            products.add(Product.fromJson(snapshot.data!.docs[i]));
+                            products.add(Product.fromDocument(snapshot.data!.docs[i]));
                           }
                         }
                       }

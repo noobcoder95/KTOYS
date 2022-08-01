@@ -4,15 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intl/intl.dart';
 import 'package:marketky/constant/app_color.dart';
 import 'package:marketky/constant/factory.dart';
 import 'package:marketky/core/model/Cart.dart';
 import 'package:marketky/views/screens/penjual/add_product.dart';
 import 'package:marketky/views/screens/penjual/detail_user.dart';
+import 'package:marketky/views/screens/penjual/sales_report.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../constant/idr_currency.dart';
 import '../../../core/model/Product.dart';
 import '../../../main.dart';
+import '../product_detail.dart';
 
 class DashboardPage extends StatefulWidget {
   @override
@@ -24,6 +27,7 @@ class _DashboardState extends State<DashboardPage> {
   final ScrollController _listScrollController = ScrollController();
   int _limit = 20;
   int _limitIncrement = 20;
+  int totalPenghasilan = 0;
 
   void scrollListener()
   {
@@ -53,18 +57,11 @@ class _DashboardState extends State<DashboardPage> {
             elevation: 5,
             title: title(),
             systemOverlayStyle: SystemUiOverlayStyle.light,
-            leadingWidth: _menuIndex == 0 ? 100 : null,
-            leading: _menuIndex == 0 ?
-            TextButton(
+            leadingWidth: 100,
+            leading: TextButton(
                 onPressed: ()=> logOut(),
-                child: Text('Keluar', style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600))) : null,
-            actions: _menuIndex == 0 ?
-            [
-              TextButton(
-                  onPressed: ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => AddProduct())),
-                  child: Text('Tambah Produk', style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600)))
-            ] :
-            null,
+                child: Text('Keluar', style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600))),
+            actions: actionButton(),
           ),
           // Checkout Button
           bottomNavigationBar: Container(
@@ -103,7 +100,7 @@ class _DashboardState extends State<DashboardPage> {
       case 2:
         return Text('Data Pesanan', style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600));
       case 3:
-        return Text('Laporan Pendapatan', style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600));
+        return Text('Laporan\nPendapatan', textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600));
       default:
         return Text('Data Produk', style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600));
     }
@@ -196,21 +193,38 @@ class _DashboardState extends State<DashboardPage> {
                                           alignment: Alignment.centerLeft,
                                           margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
                                         ),
-                                        _listUser[index].alamatEmail.isNotEmpty ?
+                                        Container(
+                                          child: Text(
+                                            _listUser[index].namaPengguna,
+                                            maxLines: 1,
+                                            style: TextStyle(color: Color(0xff203152)),
+                                          ),
+                                          alignment: Alignment.centerLeft,
+                                          margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                        ),
                                         Container(
                                           child: Text(
                                             _listUser[index].alamatEmail,
                                             maxLines: 1,
-                                            style: TextStyle(color: Color(0xff203152), fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+                                            style: TextStyle(color: Color(0xff203152)),
                                           ),
                                           alignment: Alignment.centerLeft,
                                           margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
-                                        ) :
+                                        ),
                                         Container(
                                           child: Text(
                                             _listUser[index].nomorTelepon,
                                             maxLines: 1,
-                                            style: TextStyle(color: Color(0xff203152), fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+                                            style: TextStyle(color: Color(0xff203152)),
+                                          ),
+                                          alignment: Alignment.centerLeft,
+                                          margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                        ),
+                                        Container(
+                                          child: Text(
+                                            _listUser[index].alamatLengkap,
+                                            maxLines: 1,
+                                            style: TextStyle(color: Color(0xff203152)),
                                           ),
                                           alignment: Alignment.centerLeft,
                                           margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
@@ -252,23 +266,19 @@ class _DashboardState extends State<DashboardPage> {
             }
           },
         );
-      default:
+      case 2:
         return StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('products').snapshots(),
+          stream: FirebaseFirestore.instance.collection('pesanan').snapshots(),
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasData) {
-              List<Cart> products = [];
+              List<DataPesanan> products = [];
               if(snapshot.data != null)
               {
                 int length = snapshot.data!.docs.length;
 
                 for(int i = 0; i < length; i++)
                 {
-                  Product product = Product.fromJson(snapshot.data!.docs[i]);
-                  if(product.storeId == auth.currentUser!.uid)
-                  {
-                    products.add(Cart.fromJson(snapshot.data!.docs[i]));
-                  }
+                  products.add(DataPesanan.fromDocument(snapshot.data!.docs[i]));
                 }
               }
 
@@ -285,7 +295,540 @@ class _DashboardState extends State<DashboardPage> {
                       itemBuilder: (context, index) {
                         return Container(
                           width: MediaQuery.of(context).size.width,
-                          height: 80,
+                          height: products[index].tanggalPengiriman != null && products[index].resiPengiriman != null && products[index].resiPengiriman!.isNotEmpty ?
+                          285 : 225,
+                          padding: EdgeInsets.only(top: 5, left: 5, right: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: AppColor.border, width: 1),
+                          ),
+                          child: Row(
+                            children: [
+                              // Image
+                              GestureDetector(
+                                child: Container(
+                                  width: 70,
+                                  height: 70,
+                                  margin: EdgeInsets.only(right: 20),
+                                  decoration: BoxDecoration(
+                                    color: AppColor.border,
+                                    borderRadius: BorderRadius.circular(16),
+                                    image: DecorationImage(image: NetworkImage(products[index].imageUrl), fit: BoxFit.cover),
+                                  ),
+                                ),
+                                onTap: ()
+                                {
+                                  FirebaseFirestore.instance.collection('products').doc(products[index].idProduk).get().then((snapshot) {
+                                    if(snapshot.exists)
+                                    {
+                                      Product product = Product.fromDocument(snapshot);
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetail(product: product)));
+                                    }
+                                  });
+                                },
+                              ),
+                              // Info
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Product Name
+                                    Text(
+                                      '${products[index].namaProduk}',
+                                      style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'poppins', color: AppColor.secondary),
+                                    ),
+                                    // Product Price - Increment Decrement Button
+                                    Container(
+                                      margin: EdgeInsets.only(top: 4),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          // Product Price
+                                          Expanded(
+                                            child: Text(
+                                              '${CurrencyFormat.convertToIdr(products[index].totalHarga, 2)}',
+                                              style: TextStyle(fontWeight: FontWeight.w700, fontFamily: 'poppins', color: AppColor.primary),
+                                            ),
+                                          ),
+                                          // Increment Decrement Button
+                                          Container(
+                                            height: 26,
+                                            width: 90,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(8),
+                                              color: AppColor.primarySoft,
+                                            ),
+                                            child: FittedBox(
+                                              fit: BoxFit.scaleDown,
+                                              child: Text(
+                                                '${products[index].jumlahItem} Item',
+                                                style: TextStyle(fontFamily: 'poppins', fontWeight: FontWeight.w500),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.only(top: 2, bottom: 8),
+                                      child: Text(
+                                        'Nama Pemesan:\n${products[index].namaPemesan}',
+                                        style: TextStyle(color: AppColor.secondary.withOpacity(0.7), fontSize: 12),
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.only(top: 2, bottom: 8),
+                                      child: Text(
+                                        'Tanggal Pemesanan:\n${products[index].tanggalPemesanan.toString().split('.')[0]}',
+                                        style: TextStyle(color: AppColor.secondary.withOpacity(0.7), fontSize: 12),
+                                      ),
+                                    ),
+                                    products[index].tanggalPengiriman != null && products[index].resiPengiriman != null && products[index].resiPengiriman!.isNotEmpty ?
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          margin: EdgeInsets.only(top: 2, bottom: 8),
+                                          child: Text(
+                                            'Tanggal Pengiriman:\n${products[index].tanggalPengiriman.toString().split('.')[0]}',
+                                            style: TextStyle(color: AppColor.secondary.withOpacity(0.7), fontSize: 12),
+                                          ),
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.only(top: 2, bottom: 8),
+                                          child: Text(
+                                            'Resi Pengiriman:\n${products[index].resiPengiriman}',
+                                            style: TextStyle(color: AppColor.secondary.withOpacity(0.7), fontSize: 12),
+                                          ),
+                                        ),
+                                      ],
+                                    ) :
+                                    products[index].statusPesanan != 'cancel' ?
+                                    Container(
+                                      margin: EdgeInsets.only(top: 2, bottom: 8),
+                                      child: Text(
+                                        'Status Pesanan:\nPesanan sementara disiapkan.',
+                                        style: TextStyle(color: AppColor.secondary.withOpacity(0.7), fontSize: 12),
+                                      ),
+                                    ) :
+                                    Container(
+                                      margin: EdgeInsets.only(top: 2, bottom: 8),
+                                      child: Text(
+                                        'Status Pesanan:\nPesanan telah dibatalkan.',
+                                        style: TextStyle(color: AppColor.secondary.withOpacity(0.7), fontSize: 12),
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.only(top: 4, bottom: 4),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          // Product Price
+                                          GestureDetector(
+                                            child: Container(
+                                              height: 26,
+                                              width: 90,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(8),
+                                                color: AppColor.primarySoft,
+                                              ),
+                                              child: FittedBox(
+                                                fit: BoxFit.scaleDown,
+                                                child: Text(
+                                                  'Batalkan',
+                                                  style: TextStyle(fontFamily: 'poppins', fontWeight: FontWeight.w500),
+                                                ),
+                                              ),
+                                            ),
+                                            onTap: (){
+                                              if(products[index].statusPesanan == 'cancel')
+                                              {
+                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                    backgroundColor: AppColor.primary,
+                                                    content: Text('Pesanan telah dibatalkan', style: TextStyle(color: Colors.white)),
+                                                    duration: Duration(seconds: 3)));
+                                              }
+                                              else
+                                              {
+                                                FirebaseFirestore.instance.collection('pesanan').doc(products[index].idPesanan).update(
+                                                    {
+                                                      'resi_pengiriman': null,
+                                                      'tanggal_pengiriman': null,
+                                                      'status_pesanan': 'cancel'
+                                                    }
+                                                ).then((value) => null);
+                                              }
+                                            },
+                                          ),
+                                          // Increment Decrement Button
+                                          GestureDetector(
+                                            child: Container(
+                                              height: 26,
+                                              width: 90,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(8),
+                                                color: AppColor.primarySoft,
+                                              ),
+                                              child: FittedBox(
+                                                fit: BoxFit.scaleDown,
+                                                child: Text(
+                                                  'Konfirmasi',
+                                                  style: TextStyle(fontFamily: 'poppins', fontWeight: FontWeight.w500),
+                                                ),
+                                              ),
+                                            ),
+                                            onTap: (){
+                                              if(products[index].statusPesanan == 'cancel')
+                                              {
+                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                    backgroundColor: AppColor.primary,
+                                                    content: Text('Pesanan telah dibatalkan', style: TextStyle(color: Colors.white)),
+                                                    duration: Duration(seconds: 3)));
+                                              }
+                                              else if(products[index].statusPesanan == 'confirmed' && products[index].tanggalPengiriman != null && products[index].resiPengiriman != null && products[index].resiPengiriman!.isNotEmpty)
+                                              {
+                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                    backgroundColor: AppColor.primary,
+                                                    content: Text('Pesanan telah dikonfirmasi', style: TextStyle(color: Colors.white)),
+                                                    duration: Duration(seconds: 3)));
+                                              }
+                                              else
+                                              {
+                                                TextEditingController resiPengiriman = TextEditingController(), tanggalPengiriman = TextEditingController();
+
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (context) =>
+                                                        AlertDialog(
+                                                          title: Text('Konfirmasi Pesanan', textAlign: TextAlign.center),
+                                                          content: Container(
+                                                            height: 120,
+                                                            child: Column(
+                                                              children: [
+                                                                TextField(
+                                                                  controller: resiPengiriman,
+                                                                  maxLines: 1,
+                                                                  decoration: InputDecoration(hintText: "Resi Pengiriman"),
+                                                                  keyboardType: TextInputType.text,
+                                                                ),
+                                                                SizedBox(height: 10),
+                                                                TextField(
+                                                                  controller: tanggalPengiriman,
+                                                                  onTap: (){
+                                                                    showDatePicker(
+                                                                        context: context, initialDate: DateTime.now(),
+                                                                        firstDate: DateTime(2000), //DateTime.now() - not to allow to choose before today.
+                                                                        lastDate: DateTime(2101)
+                                                                    ).then((pickedDate) {
+                                                                      if(pickedDate != null ){
+                                                                        tanggalPengiriman.text = pickedDate.toString().split('.')[0];
+                                                                      }
+                                                                    });
+                                                                  },
+                                                                  decoration: InputDecoration(hintText: "Tanggal Pengiriman"),
+                                                                  keyboardType: TextInputType.datetime,
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          actions: <Widget>[
+                                                            ElevatedButton(
+                                                              child: Text('Konfirmasi'),
+                                                              style: ElevatedButton.styleFrom(
+                                                                primary: AppColor.primary,
+                                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                                              ),
+                                                              onPressed: () {
+                                                                DateTime? date;
+                                                                try
+                                                                {
+                                                                  date = DateFormat('yyyy-MM-dd hh:mm:ss').parseLoose(tanggalPengiriman.value.text);
+                                                                }
+                                                                catch(e)
+                                                                {
+                                                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                      backgroundColor: AppColor.primary,
+                                                                      content: Text('Tanggal pengiriman tidak valid', style: TextStyle(color: Colors.white)),
+                                                                      duration: Duration(seconds: 3)));
+                                                                }
+
+                                                                if(resiPengiriman.value.text.isNotEmpty && date != null)
+                                                                {
+                                                                  FirebaseFirestore.instance.collection('pesanan').doc(products[index].idPesanan).update(
+                                                                      {
+                                                                        'resi_pengiriman': resiPengiriman.value.text,
+                                                                        'tanggal_pengiriman': date.toString(),
+                                                                        'status_pesanan': 'confirmed'
+                                                                      }
+                                                                  ).then((value) => Navigator.of(context).pop());
+                                                                }
+                                                              },
+                                                            ),
+                                                          ],
+                                                        ));
+                                              }
+                                            },
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) => SizedBox(height: 16),
+                      itemCount: products.length,
+                    ),
+                  ],
+                );
+              }
+              else
+              {
+                return Center(
+                  child: Text('Belum ada pesanan.', style: TextStyle(color: Colors.grey)),
+                );
+              }
+            } else {
+              return Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(AppColor.primary),
+                ),
+              );
+            }
+          },
+        );
+      case 3:
+        return Container(
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height - 230,
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection('laporan').snapshots(),
+                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasData) {
+                      List<DataLaporan> laporan = [];
+                      if(snapshot.data != null)
+                      {
+                        int length = snapshot.data!.docs.length;
+
+                        for(int i = 0; i < length; i++)
+                        {
+                          laporan.add(DataLaporan.fromDocument(snapshot.data!.docs[i]));
+                        }
+                        if(totalPenghasilan == 0 && laporan.length > 0)
+                        {
+                          int lengthLaporan = laporan.length, harga = 0;
+                          for(int i = 0; i < lengthLaporan; i++)
+                          {
+                            harga = harga + laporan[i].totalPembayaran;
+                          }
+                          totalPenghasilan = harga;
+                          Future.delayed(Duration(seconds: 1), (){
+                            setState(() {});
+                          });
+                        }
+                      }
+
+                      if(laporan.length > 0)
+                      {
+                        return ListView(
+                          shrinkWrap: true,
+                          physics: BouncingScrollPhysics(),
+                          padding: EdgeInsets.all(16),
+                          children: [
+                            ListView.separated(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 175,
+                                  padding: EdgeInsets.only(top: 5, left: 12, right: 12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(color: AppColor.border, width: 1),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            laporan[index].namaProduk,
+                                            style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'poppins', color: AppColor.secondary),
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.only(top: 4),
+                                            child: Text(
+                                              '${CurrencyFormat.convertToIdr(laporan[index].totalPembayaran, 2)}',
+                                              style: TextStyle(fontWeight: FontWeight.w700, fontFamily: 'poppins', color: AppColor.primary),
+                                            ),
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.only(top: 4),
+                                            child: Text(
+                                              'Total Pesanan:',
+                                              style: TextStyle(fontWeight: FontWeight.w700, fontFamily: 'poppins', color: AppColor.primary),
+                                            ),
+                                          ),
+                                          Container(
+                                            height: 26,
+                                            width: 90,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(8),
+                                              color: AppColor.primarySoft,
+                                            ),
+                                            child: FittedBox(
+                                              fit: BoxFit.scaleDown,
+                                              child: Text(
+                                                '${laporan[index].totalPesanan} Item',
+                                                style: TextStyle(fontFamily: 'poppins', fontWeight: FontWeight.w500),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(top: 2, bottom: 8),
+                                            child: Text(
+                                              'Nama Pemesan:\n${laporan[index].namaPemesan}',
+                                              style: TextStyle(color: AppColor.secondary.withOpacity(0.7), fontSize: 12),
+                                            ),
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.only(top: 2, bottom: 8),
+                                            child: Text(
+                                              'Tanggal Pemesanan:\n${laporan[index].tanggalPemesanan.toString().split('.')[0]}',
+                                              style: TextStyle(color: AppColor.secondary.withOpacity(0.7), fontSize: 12),
+                                            ),
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.only(top: 2, bottom: 8),
+                                            child: Text(
+                                              'Tanggal Pembayaran:\n${laporan[index].tanggalPembayaran.toString().split('.')[0]}',
+                                              style: TextStyle(color: AppColor.secondary.withOpacity(0.7), fontSize: 12),
+                                            ),
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.only(top: 2, bottom: 8),
+                                            child: Text(
+                                              'Resi Pengiriman:\n${laporan[index].resiPengiriman}',
+                                              style: TextStyle(color: AppColor.secondary.withOpacity(0.7), fontSize: 12),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                );
+                              },
+                              separatorBuilder: (context, index) => SizedBox(height: 16),
+                              itemCount: laporan.length,
+                            ),
+                          ],
+                        );
+                      }
+                      else
+                      {
+                        return Center(
+                          child: Text('Belum ada laporan.', style: TextStyle(color: Colors.grey)),
+                        );
+                      }
+                    } else {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(AppColor.primary),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: ElevatedButton(
+                  onPressed: () {
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        flex: 6,
+                        child: Text(
+                          'Total Pendapatan', textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16, fontFamily: 'poppins'),
+                        ),
+                      ),
+                      Container(
+                        width: 2,
+                        height: 26,
+                        color: Colors.white.withOpacity(0.5),
+                      ),
+                      Flexible(
+                        flex: 6,
+                        child: Text(
+                          CurrencyFormat.convertToIdr(totalPenghasilan, 2),
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14, fontFamily: 'poppins'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 36, vertical: 18),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    primary: AppColor.primary,
+                    elevation: 0,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      default:
+        return StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance.collection('products').snapshots(),
+          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasData) {
+              List<Cart> products = [];
+              if(snapshot.data != null)
+              {
+                int length = snapshot.data!.docs.length;
+
+                for(int i = 0; i < length; i++)
+                {
+                  products.add(Cart.fromJson(snapshot.data!.docs[i]));
+                }
+              }
+
+              if(products.length > 0)
+              {
+                return ListView(
+                  shrinkWrap: true,
+                  physics: BouncingScrollPhysics(),
+                  padding: EdgeInsets.all(16),
+                  children: [
+                    ListView.separated(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 85,
                           padding: EdgeInsets.only(top: 5, left: 5, bottom: 5, right: 12),
                           decoration: BoxDecoration(
                             color: Colors.white,
@@ -295,15 +838,26 @@ class _DashboardState extends State<DashboardPage> {
                           child: Row(
                             children: [
                               // Image
-                              Container(
-                                width: 70,
-                                height: 70,
-                                margin: EdgeInsets.only(right: 20),
-                                decoration: BoxDecoration(
-                                  color: AppColor.border,
-                                  borderRadius: BorderRadius.circular(16),
-                                  image: DecorationImage(image: NetworkImage(products[index].image[0]), fit: BoxFit.cover),
+                              GestureDetector(
+                                child: Container(
+                                  width: 70,
+                                  height: 70,
+                                  margin: EdgeInsets.only(right: 20),
+                                  decoration: BoxDecoration(
+                                    color: AppColor.border,
+                                    borderRadius: BorderRadius.circular(16),
+                                    image: DecorationImage(image: NetworkImage(products[index].image[0]), fit: BoxFit.cover),
+                                  ),
                                 ),
+                                onTap: (){
+                                  FirebaseFirestore.instance.collection('products').doc(products[index].id).get().then((snapshot) {
+                                    if(snapshot.exists)
+                                    {
+                                      Product product = Product.fromDocument(snapshot);
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetail(product: product)));
+                                    }
+                                  });
+                                },
                               ),
                               // Info
                               Expanded(
@@ -507,6 +1061,32 @@ class _DashboardState extends State<DashboardPage> {
             ],
           );
         }).then((value) => Future.value(value));
+  }
+
+  List<Widget>? actionButton(){
+    switch(_menuIndex)
+    {
+      case 1:
+        return null;
+      case 2:
+        return null;
+      case 3:
+        return [
+          TextButton(
+              onPressed: ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => SalesReport())).then((value) => Future.delayed(Duration(seconds: 1), (){
+                setState(() {
+                  totalPenghasilan = 0;
+                });
+              })),
+              child: Text('Buat Laporan', style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600)))
+        ];
+      default:
+        return [
+          TextButton(
+              onPressed: ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => AddProduct())),
+              child: Text('Tambah Produk', style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600)))
+        ];
+    }
   }
 
   void _onItemTapped(int index) {

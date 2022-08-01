@@ -446,6 +446,10 @@ class _AddProductState extends State<AddProduct> {
                   actions: <Widget>[
                     ElevatedButton(
                       child: Text('Tambahkan'),
+                      style: ElevatedButton.styleFrom(
+                        primary: AppColor.primary,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      ),
                       onPressed: () {
                         ColorWay colorProduk = ColorWay.fromJson({
                         'name': color.toString(),
@@ -516,6 +520,10 @@ class _AddProductState extends State<AddProduct> {
               actions: <Widget>[
                 ElevatedButton(
                   child: Text('Tambahkan'),
+                  style: ElevatedButton.styleFrom(
+                    primary: AppColor.primary,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  ),
                   onPressed: () {
                     if(size.value.text.isNotEmpty)
                     {

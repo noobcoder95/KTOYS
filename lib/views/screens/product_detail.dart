@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:marketky/constant/app_color.dart';
 import 'package:marketky/core/model/Product.dart';
+import 'package:marketky/main.dart';
 import 'package:marketky/views/screens/image_viewer.dart';
 import 'package:marketky/views/screens/reviews_page.dart';
 import 'package:marketky/views/widgets/modals/add_to_cart_modal.dart';
@@ -28,7 +29,8 @@ class _ProductDetailState extends State<ProductDetail> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
-      bottomNavigationBar: Container(
+      bottomNavigationBar: tipeAkun == 'Pembeli' ?
+      Container(
         width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -80,7 +82,7 @@ class _ProductDetailState extends State<ProductDetail> {
             ),
           ],
         ),
-      ),
+      ) : null,
       body: ListView(
         shrinkWrap: true,
         physics: BouncingScrollPhysics(),

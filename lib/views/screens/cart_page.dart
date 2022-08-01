@@ -56,6 +56,7 @@ class _CartPageState extends State<CartPage> {
           onPressed: () {
             if(totalHarga > 0)
             {
+
               for(int i = 0; i < carts.length; i++)
               {
                 String timestamp = '${DateTime.now()}';
@@ -64,7 +65,23 @@ class _CartPageState extends State<CartPage> {
                   'title': '#${carts[i].id} - ${carts[i].name}',
                   'description': 'Produk berhasil dipesan! Terimakasih telah menggunakan layanan kami.',
                   'date_time': timestamp,
-                }).then((value) => null);
+                }).then((value) {
+                  FirebaseFirestore.instance.collection('pesanan').add({
+                    'nama_produk': carts[i].name,
+                    'image_url': carts[i].image[0].toString(),
+                    'id_pemesan': auth.currentUser!.uid,
+                    'jumlah_item': carts[i].stocks,
+                    'tanggal_pemesanan': timestamp,
+                    'nama_pemesan': namaLengkap,
+                    'alamat_pengiriman': alamatLengkap,
+                    'nomor_telepon': nomorTelepon,
+                    'status_pesanan': 'pending',
+                    'id_produk': carts[i].id,
+                    'total_harga': carts[i].price * carts[i].stocks,
+                    'resi_pengiriman': null,
+                    'tanggal_pengiriman': null,
+                  }).then((value) => null);
+                });
               }
               Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderSuccessPage()));
             }
@@ -232,7 +249,7 @@ class _CartPageState extends State<CartPage> {
                                                   FirebaseFirestore.instance.collection('products').doc(carts[index].id).get().then((snapshot) {
                                                     if(snapshot.exists)
                                                     {
-                                                      Product data = Product.fromJson(snapshot);
+                                                      Product data = Product.fromDocument(snapshot);
                                                       if(carts[index].stocks < data.stocks)
                                                       {
                                                         FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid).collection('Keranjang').doc(carts[index].id).update({'stocks': carts[index].stocks + 1}).then((value) => setState(() {

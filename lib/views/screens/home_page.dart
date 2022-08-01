@@ -350,7 +350,7 @@ class _HomePageState extends State<HomePage> {
 
                 for(int i = 0; i < length; i++)
                 {
-                  products.add(Product.fromJson(snapshot.data!.docs[i]));
+                  products.add(Product.fromDocument(snapshot.data!.docs[i]));
                 }
               }
 

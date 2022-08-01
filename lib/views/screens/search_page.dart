@@ -214,7 +214,7 @@ class _SearchPageState extends State<SearchPage> {
                               FirebaseFirestore.instance.collection('products').doc(history[index].productId).get().then((snapshot) {
                                 if(snapshot.exists)
                                 {
-                                  Product item = Product.fromJson(snapshot);
+                                  Product item = Product.fromDocument(snapshot);
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetail(product: item)));
                                 }
                               });

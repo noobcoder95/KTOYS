@@ -44,9 +44,9 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         fontFamily: 'Nunito',
       ),
-      home: auth.currentUser != null && auth.currentUser!.uid != 'ykRHnUnEOJS554UoeyvLSeciQRt1' ?
+      home: auth.currentUser != null && auth.currentUser!.uid != 'Je9hfwGkGDVOMX4q6N6pwu5L4Q23' ?
       HomePage() :
-      auth.currentUser != null && auth.currentUser!.uid == 'ykRHnUnEOJS554UoeyvLSeciQRt1' ?
+      auth.currentUser != null && auth.currentUser!.uid == 'Je9hfwGkGDVOMX4q6N6pwu5L4Q23' ?
       DashboardPage() :
       WelcomePage(),
     );

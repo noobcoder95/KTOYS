@@ -29,7 +29,7 @@ class Product {
     required this.storeId
   });
 
-  factory Product.fromJson(DocumentSnapshot json) {
+  factory Product.fromDocument(DocumentSnapshot json) {
 
     List<String> image = [];
     String name = '';

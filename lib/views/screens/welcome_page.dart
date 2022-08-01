@@ -109,7 +109,7 @@ class _WelcomePage extends State<WelcomePage>{
                               setState(() {
                                 _isSigningIn = false;
                               });
-                              if(user.uid == 'ykRHnUnEOJS554UoeyvLSeciQRt1')
+                              if(user.uid == 'Je9hfwGkGDVOMX4q6N6pwu5L4Q23')
                               {
                                 Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => DashboardPage()));
                               }
