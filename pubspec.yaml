@@ -35,6 +35,8 @@ dependencies:
   image_picker:
   flutter_colorpicker:
   intl:
+  path_provider:
+  pdf:
   pin_code_fields:
   shared_preferences:
   smooth_page_indicator:
