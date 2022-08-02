@@ -486,7 +486,7 @@ class _DashboardState extends State<DashboardPage> {
                                         context: context,
                                         builder: (BuildContext context) =>
                                             AlertDialog(
-                                              title: Text('Hapus Produk'),
+                                              title: Text('Hapus Pesanan'),
                                               content: Text('Lanjutkan untuk menghapus laporan.'),
                                               actions: <Widget>[
                                                 ElevatedButton(
@@ -1042,7 +1042,7 @@ class _DashboardState extends State<DashboardPage> {
                                   return GestureDetector(
                                     child: Container(
                                       width: MediaQuery.of(context).size.width,
-                                      height: 175,
+                                      height: 195,
                                       padding: EdgeInsets.only(top: 5, left: 12, right: 12),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
@@ -1133,7 +1133,7 @@ class _DashboardState extends State<DashboardPage> {
                                           context: context,
                                           builder: (BuildContext context) =>
                                               AlertDialog(
-                                                title: Text('Hapus Produk'),
+                                                title: Text('Hapus Laporan'),
                                                 content: Text('Lanjutkan untuk menghapus laporan.'),
                                                 actions: <Widget>[
                                                   ElevatedButton(
