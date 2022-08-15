@@ -51,18 +51,13 @@ class _WelcomePage extends State<WelcomePage>{
                       ),
                     ),
                   ),
-                  Text(
-                    'Belanja produk anak. Mencari \nproduk menarik untuk anak disini.',
-                    style: TextStyle(color: AppColor.secondary.withOpacity(0.7), fontSize: 16),
-                    textAlign: TextAlign.center,
-                  ),
                 ],
               ),
               // Section 3 - Get Started Button
               _isSigningIn ?
               Center(
                 child: Container(
-                  width: 50,
+                  width: 10,
                   height: 50,
                   child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.black12)),
                 ),
@@ -126,7 +121,7 @@ class _WelcomePage extends State<WelcomePage>{
                               setState(() {
                                 _isSigningIn = false;
                               });
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => RegisterPage()));
+                              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => RegisterPage()));
                             }
                           }
                         }
@@ -137,7 +132,7 @@ class _WelcomePage extends State<WelcomePage>{
                             setState(() {
                               _isSigningIn = false;
                             });
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => RegisterPage()));
+                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => RegisterPage()));
                           }
                         }
                       });
@@ -155,7 +150,7 @@ class _WelcomePage extends State<WelcomePage>{
                     }
                   },
                   child: Text(
-                    'Memulai Aplikasi',
+                    'Mengaitkan Gmail',
                     style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18, fontFamily: 'poppins'),
                   ),
                   style: ElevatedButton.styleFrom(

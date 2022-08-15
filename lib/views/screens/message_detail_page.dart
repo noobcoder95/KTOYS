@@ -69,27 +69,15 @@ class _MessageDetailPageState extends State<MessageDetailPage> {
                   reverse: true,
                   children: [
                     MyBubbleChatWidget(
-                      chat: 'baiklah',
+                      chat: 'Menu Pesan Coming Soon',
                       time: '19.48',
                     ),
                     SenderBubbleChatWidget(
-                      chat: '',
-                      time: '',
+                      chat: 'Menu Pesan Coming Soon',
+                      time: '19.30',
                     ),
                     MyBubbleChatWidget(
-                      chat: 'Melihat pesan..',
-                      time: '10:48',
-                    ),
-                    SenderBubbleChatWidget(
-                      chat: 'Log elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam',
-                      time: '10:48',
-                    ),
-                    MyBubbleChatWidget(
-                      chat: 'por incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam',
-                      time: '10:48',
-                    ),
-                    SenderBubbleChatWidget(
-                      chat: 'Lorem ipsum dpor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam',
+                      chat: 'Menu Pesan Coming Soon',
                       time: '10:48',
                     ),
                   ],
@@ -118,7 +106,7 @@ class _MessageDetailPageState extends State<MessageDetailPage> {
                             color: AppColor.primary,
                           ),
                         ),
-                        hintText: 'Type a message here...',
+                        hintText: 'Ketik pesan',
                         contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 14),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: AppColor.border, width: 1),

@@ -25,7 +25,7 @@ class RatingTag extends StatelessWidget {
           ),
           SizedBox(width: 4),
           Text(
-            '$value',
+            value.toStringAsFixed(1),
             style: TextStyle(
               color: Colors.white,
               fontSize: 12,

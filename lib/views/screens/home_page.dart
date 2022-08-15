@@ -5,7 +5,6 @@ import 'package:marketky/constant/app_color.dart';
 import 'package:marketky/core/model/Category.dart';
 import 'package:marketky/core/model/Product.dart';
 import 'package:marketky/core/services/CategoryService.dart';
-import 'package:marketky/views/screens/message_page.dart';
 import 'package:marketky/views/screens/profile_page.dart';
 import 'package:marketky/views/screens/search_page.dart';
 import 'package:marketky/views/widgets/item_card.dart';
@@ -150,6 +149,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                             ),
+                            /*
                             GestureDetector(
                               onTap: (){
                                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => MessagePage()));
@@ -193,6 +193,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                             ),
+                            */
                           ],
                         ),
                       ],

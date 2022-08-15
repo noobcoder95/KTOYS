@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:marketky/constant/app_color.dart';
 import 'package:marketky/views/screens/cart_page.dart';
-import 'package:marketky/views/screens/message_page.dart';
 import 'package:marketky/views/screens/search_page.dart';
 
 class MainAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -113,6 +112,7 @@ class _MainAppBarState extends State<MainAppBar> {
               ),
             ),
           ),
+          /*
           GestureDetector(
             onTap: (){
               Navigator.of(context).push(MaterialPageRoute(builder: (context) => MessagePage()));
@@ -157,6 +157,7 @@ class _MainAppBarState extends State<MainAppBar> {
               ),
             ),
           ),
+          */
         ],
       ), systemOverlayStyle: SystemUiOverlayStyle.light,
     );

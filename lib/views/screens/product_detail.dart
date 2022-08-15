@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:marketky/constant/app_color.dart';
 import 'package:marketky/core/model/Product.dart';
@@ -12,6 +14,7 @@ import 'package:marketky/views/widgets/selectable_circle_color.dart';
 import 'package:marketky/views/widgets/selectable_circle_size.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../constant/idr_currency.dart';
+import '../../core/model/Review.dart';
 
 class ProductDetail extends StatefulWidget {
   final Product product;
@@ -23,9 +26,37 @@ class ProductDetail extends StatefulWidget {
 
 class _ProductDetailState extends State<ProductDetail> {
   PageController productImageSlider = PageController();
+  List<Product> favorite = [];
+  List<Review> reviews = [];
+  
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
+  
+  void init()
+  {
+    FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid).collection('Favorite').get().then((value) {
+      if(value.docs.length > 0)
+      {
+        for(int i = 0; i < value.docs.length; i++)
+        {
+          Product product = Product.fromDocument(value.docs[i]);
+          favorite.add(product);
+        }
+      }
+    });
+    FirebaseFirestore.instance.collection('products').doc(widget.product.productId).get().then((product) {
+      Product _product = Product.fromDocument(product);
+      reviews.addAll(_product.reviews);
+      setState(() {});
+      print(reviews.length);
+    });
+  }
+  
   @override
   Widget build(BuildContext context) {
-    Product product = widget.product;
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
@@ -41,6 +72,7 @@ class _ProductDetailState extends State<ProductDetail> {
         ),
         child: Row(
           children: [
+            /*
             Container(
               width: 64,
               height: 64,
@@ -55,6 +87,7 @@ class _ProductDetailState extends State<ProductDetail> {
                 child: SvgPicture.asset('assets/icons/Chat.svg', color: Colors.white),
               ),
             ),
+            */
             Expanded(
               child: SizedBox(
                 height: 64,
@@ -69,7 +102,7 @@ class _ProductDetailState extends State<ProductDetail> {
                       context: context,
                       backgroundColor: Colors.transparent,
                       builder: (context) {
-                        return AddToCartModal(product: product);
+                        return AddToCartModal(product: widget.product);
                       },
                     );
                   },
@@ -80,9 +113,125 @@ class _ProductDetailState extends State<ProductDetail> {
                 ),
               ),
             ),
+            SizedBox(width: 10),
+            Expanded(
+              child: SizedBox(
+                height: 64,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: reviews.any((element) => element.userID == auth.currentUser!.uid) ?
+                    Colors.grey :
+                    AppColor.primary,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    elevation: 0,
+                  ),
+                  onPressed: ()
+                  {
+                    if(reviews.any((element) => element.userID == auth.currentUser!.uid))
+                    {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        backgroundColor: AppColor.primary,
+                        content: Text('Anda sudah pernah memberi ulasan'),
+                        duration: Duration(seconds: 3),
+                      ));
+                    }
+                    else
+                    {
+                      TextEditingController text = TextEditingController();
+                      double rating = 3;
+                      showDialog(
+                          context: context,
+                          builder: (context) =>
+                              AlertDialog(
+                                title: Text('Ulasan', textAlign: TextAlign.center),
+                                content: SizedBox(
+                                  height: MediaQuery.of(context).size.height * .2 + 50,
+                                  child: Column(
+                                    children: [
+                                      RatingBar.builder(
+                                        initialRating: 3,
+                                        minRating: 1,
+                                        direction: Axis.horizontal,
+                                        allowHalfRating: true,
+                                        itemCount: 5,
+                                        itemBuilder: (context, _) => Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
+                                        ),
+                                        onRatingUpdate: (value) {
+                                          rating = value;
+                                        },
+                                      ),
+                                      SizedBox(height: 20),
+                                      SizedBox(
+                                        height: 100,
+                                        child: TextField(
+                                          controller: text,
+                                          maxLines: null,
+                                          decoration: InputDecoration(hintText: "Beri ulasan"),
+                                          keyboardType: TextInputType.multiline,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                actions: <Widget>[
+                                  ElevatedButton(
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 10),
+                                      child: Text('Kirim'),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      primary: AppColor.primary,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                    ),
+                                    onPressed: () {
+                                      if(text.value.text.isNotEmpty)
+                                      {
+                                        Review newReview = Review(
+                                            photoUrl: auth.currentUser!.photoURL ?? '',
+                                            userID: auth.currentUser!.uid,
+                                            name: namaPengguna!,
+                                            review: text.value.text,
+                                            rating: rating);
+
+                                        reviews.add(newReview);
+                                        List listReview = [];
+                                        double rateAmount = 0;
+                                        for(int i = 0; i < reviews.length; i++)
+                                        {
+                                          listReview.add({
+                                            'photo_url': reviews[i].photoUrl,
+                                            'name': reviews[i].name,
+                                            'review': reviews[i].review,
+                                            'rating': reviews[i].rating,
+                                            'user_id': reviews[i].userID
+                                          });
+                                          rateAmount = rateAmount + reviews[i].rating;
+                                        }
+                                        FirebaseFirestore.instance.collection('products').doc(widget.product.productId).update({
+                                          'reviews': listReview,
+                                          'rating': rateAmount / listReview.length
+                                        }).then((value) => Navigator.of(context).pop());
+                                      }
+                                    },
+                                  ),
+                                ],
+                              )
+                      ).then((value) => setState((){}));
+                    }
+                  },
+                  child: Text(
+                    'Beri Ulasan',
+                    style: TextStyle(fontFamily: 'poppins', fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
-      ) : null,
+      ) :
+      null,
       body: ListView(
         shrinkWrap: true,
         physics: BouncingScrollPhysics(),
@@ -96,7 +245,7 @@ class _ProductDetailState extends State<ProductDetail> {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => ImageViewer(imageUrl: product.image),
+                      builder: (context) => ImageViewer(imageUrl: widget.product.image),
                     ),
                   );
                 },
@@ -108,9 +257,9 @@ class _ProductDetailState extends State<ProductDetail> {
                     physics: BouncingScrollPhysics(),
                     controller: productImageSlider,
                     children: List.generate(
-                      product.image.length,
+                      widget.product.image.length,
                       (index) => Image.network(
-                        product.image[index],
+                        widget.product.image[index],
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -148,7 +297,7 @@ class _ProductDetailState extends State<ProductDetail> {
                         decoration: BoxDecoration(color: AppColor.primarySoft, borderRadius: BorderRadius.circular(15)),
                         alignment: Alignment.center,
                         child: Text(
-                          '${product.storeName}',
+                          '${widget.product.storeName}',
                           style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600),
                         ),
                       ),
@@ -156,7 +305,66 @@ class _ProductDetailState extends State<ProductDetail> {
                         width: 40,
                         height: 40,
                         child: ElevatedButton(
-                          onPressed: (){},
+                          onPressed: () {
+                            DocumentReference doc = FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid).collection('Favorite').doc(widget.product.productId);
+
+                            doc.get().then((value)
+                            {
+                              if(value.exists)
+                              {
+                                favorite.removeWhere((product) => product.productId == widget.product.productId);
+                                doc.delete().then((value) => setState((){}));
+
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  backgroundColor: AppColor.primary,
+                                  content: Text('Produk dihapus dari favorite'),
+                                  duration: Duration(seconds: 3),
+                                ));
+                              }
+
+                              else
+                              {
+                                favorite.add(widget.product);
+                                List colors = [], sizes = [];
+
+                                for(int i = 0; i < widget.product.colors.length; i++)
+                                {
+                                  colors.add({
+                                    'name': widget.product.colors[i].name,
+                                    'color': widget.product.colors[i].color.toString(),
+                                  });
+                                }
+
+                                for(int i = 0; i < widget.product.sizes.length; i++)
+                                {
+                                  sizes.add({
+                                    'name': widget.product.sizes[i].name,
+                                    'size': widget.product.sizes[i].size,
+                                  });
+                                }
+
+                                doc.set({
+                                  'image': widget.product.image,
+                                  'name': widget.product.name,
+                                  'price': widget.product.price,
+                                  'rating': 5.0,
+                                  'stocks': 0,
+                                  'description': widget.product.description,
+                                  'store_name': widget.product.storeName,
+                                  'store_id': widget.product.storeId,
+                                  'colors': colors,
+                                  'sizes': sizes,
+                                  'reviews': []
+                                }).then((value) => setState((){}));
+
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  backgroundColor: AppColor.primary,
+                                  content: Text('Produk ditambahkan ke favorite'),
+                                  duration: Duration(seconds: 3),
+                                ));
+                              }
+                            });
+                          },
                           style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                             primary: AppColor.primarySoft,
@@ -165,8 +373,10 @@ class _ProductDetailState extends State<ProductDetail> {
                             padding: EdgeInsets.all(8),
                           ),
                           child: SvgPicture.asset(
-                            'assets/icons/Bookmark.svg',
-                            color: Colors.black.withOpacity(0.5),
+                            'assets/icons/Heart.svg',
+                            color: favorite.any((element) => element.productId == widget.product.productId) ?
+                            Colors.red :
+                            Colors.black.withOpacity(0.5),
                           ),
                         ),
                       ),
@@ -179,7 +389,7 @@ class _ProductDetailState extends State<ProductDetail> {
                 bottom: 16,
                 child: SmoothPageIndicator(
                   controller: productImageSlider,
-                  count: product.image.length,
+                  count: widget.product.image.length,
                   effect: ExpandingDotsEffect(
                     dotColor: AppColor.primary.withOpacity(0.2),
                     activeDotColor: AppColor.primary.withOpacity(0.2),
@@ -205,13 +415,13 @@ class _ProductDetailState extends State<ProductDetail> {
                     children: [
                       Expanded(
                         child: Text(
-                          product.name,
+                          widget.product.name,
                           style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, fontFamily: 'poppins', color: AppColor.secondary),
                         ),
                       ),
                       RatingTag(
                         margin: EdgeInsets.only(left: 10),
-                        value: product.rating,
+                        value: widget.product.rating,
                       ),
                     ],
                   ),
@@ -219,12 +429,12 @@ class _ProductDetailState extends State<ProductDetail> {
                 Container(
                   margin: EdgeInsets.only(bottom: 14),
                   child: Text(
-                    '${CurrencyFormat.convertToIdr(product.price, 2)}',
+                    '${CurrencyFormat.convertToIdr(widget.product.price, 2)}',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, fontFamily: 'poppins', color: AppColor.primary),
                   ),
                 ),
                 Text(
-                  product.description,
+                  widget.product.description,
                   style: TextStyle(color: AppColor.secondary.withOpacity(0.7), height: 150 / 100),
                 ),
               ],
@@ -249,7 +459,7 @@ class _ProductDetailState extends State<ProductDetail> {
                   ),
                 ),
                 SelectableCircleColor(
-                  colorWay: product.colors,
+                  colorWay: widget.product.colors,
                   margin: EdgeInsets.only(top: 12),
                 ),
               ],
@@ -275,7 +485,7 @@ class _ProductDetailState extends State<ProductDetail> {
                   ),
                 ),
                 SelectableCircleSize(
-                  productSize: product.sizes,
+                  productSize: widget.product.sizes,
                   margin: EdgeInsets.only(top: 12),
                 ),
               ],
@@ -305,13 +515,18 @@ class _ProductDetailState extends State<ProductDetail> {
                   ),
                   expandedCrossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    reviews.length > 0 ?
                     ListView.separated(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) => ReviewTile(review: product.reviews[index]),
+                      itemBuilder: (context, index) => ReviewTile(review: reviews[index]),
                       separatorBuilder: (context, index) => SizedBox(height: 16),
-                      itemCount: 2,
+                      itemCount: reviews.length,
+                    ) :
+                    Center(
+                      child: Text('Belum ada ulasan'),
                     ),
+                    reviews.length > 0 ?
                     Container(
                       margin: EdgeInsets.only(left: 52, top: 12, bottom: 6),
                       child: ElevatedButton(
@@ -319,7 +534,7 @@ class _ProductDetailState extends State<ProductDetail> {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => ReviewsPage(
-                                reviews: product.reviews,
+                                reviews: reviews,
                               ),
                             ),
                           );
@@ -335,7 +550,8 @@ class _ProductDetailState extends State<ProductDetail> {
                           primary: AppColor.primarySoft,
                         ),
                       ),
-                    )
+                    ) :
+                    SizedBox.shrink()
                   ],
                 ),
               ],

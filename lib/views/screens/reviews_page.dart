@@ -15,18 +15,44 @@ class ReviewsPage extends StatefulWidget {
 
 class _ReviewsPageState extends State<ReviewsPage> with TickerProviderStateMixin {
   int _selectedTab = 0;
-  double getAverageRating() {
-    double average = 0.0;
-    for (var i = 0; i < widget.reviews.length; i++) {
-      average += widget.reviews[i].rating;
+  double average = 0;
+  List<Review> oneStar = [], twoStar = [], threeStar = [], fourStar = [], fiveStar = [];
+
+  void init()
+  {
+    double value = 0;
+    for(int i = 0; i < widget.reviews.length; i++)
+    {
+      value += widget.reviews[i].rating;
+      if(widget.reviews[i].rating < 2)
+      {
+        oneStar.add(widget.reviews[i]);
+      }
+      if(widget.reviews[i].rating >= 2 && widget.reviews[i].rating < 3)
+      {
+        twoStar.add(widget.reviews[i]);
+      }
+      if(widget.reviews[i].rating >= 3 && widget.reviews[i].rating < 4)
+      {
+        threeStar.add(widget.reviews[i]);
+      }
+      if(widget.reviews[i].rating >= 4 && widget.reviews[i].rating < 5)
+      {
+        fourStar.add(widget.reviews[i]);
+      }
+      if(widget.reviews[i].rating == 5)
+      {
+        fiveStar.add(widget.reviews[i]);
+      }
     }
-    print(average / widget.reviews.length);
-    return average / widget.reviews.length;
+    average =  value / widget.reviews.length;
+
   }
 
   @override
   void initState() {
     super.initState();
+    init();
   }
 
   @override
@@ -106,7 +132,7 @@ class _ReviewsPageState extends State<ReviewsPage> with TickerProviderStateMixin
                   Container(
                     margin: EdgeInsets.only(right: 20),
                     child: Text(
-                      '4.0',
+                      average.toStringAsFixed(1),
                       style: TextStyle(fontSize: 52, fontWeight: FontWeight.w700, fontFamily: 'poppins'),
                     ),
                   ),
@@ -115,7 +141,7 @@ class _ReviewsPageState extends State<ReviewsPage> with TickerProviderStateMixin
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       RatingBarIndicator(
-                        rating: getAverageRating(),
+                        rating: average,
                         itemBuilder: (context, index) => Icon(
                           Icons.star,
                           color: Colors.orange[400],
@@ -127,7 +153,7 @@ class _ReviewsPageState extends State<ReviewsPage> with TickerProviderStateMixin
                       Container(
                         margin: EdgeInsets.only(top: 8),
                         child: Text(
-                          'Berdasarkan 36 Ulasan',
+                          'Berdasarkan ${widget.reviews.length} Ulasan',
                           style: TextStyle(
                             color: Colors.grey[600],
                             fontSize: 12,
@@ -179,7 +205,7 @@ class _ReviewsPageState extends State<ReviewsPage> with TickerProviderStateMixin
                         Container(
                           margin: EdgeInsets.only(left: 4),
                           child: Text(
-                            '1 (2)',
+                            '1 (${oneStar.length})',
                             style: TextStyle(color: (_selectedTab == 1) ? Colors.white : Colors.grey),
                           ),
                         ),
@@ -208,7 +234,7 @@ class _ReviewsPageState extends State<ReviewsPage> with TickerProviderStateMixin
                         Container(
                           margin: EdgeInsets.only(left: 4),
                           child: Text(
-                            '2 (2)',
+                            '2 (${twoStar.length})',
                             style: TextStyle(color: (_selectedTab == 2) ? Colors.white : Colors.grey),
                           ),
                         ),
@@ -237,7 +263,7 @@ class _ReviewsPageState extends State<ReviewsPage> with TickerProviderStateMixin
                         Container(
                           margin: EdgeInsets.only(left: 4),
                           child: Text(
-                            '3 (2)',
+                            '3 (${threeStar.length})',
                             style: TextStyle(color: (_selectedTab == 3) ? Colors.white : Colors.grey),
                           ),
                         ),
@@ -266,7 +292,7 @@ class _ReviewsPageState extends State<ReviewsPage> with TickerProviderStateMixin
                         Container(
                           margin: EdgeInsets.only(left: 4),
                           child: Text(
-                            '4 (2)',
+                            '4 (${fourStar.length})',
                             style: TextStyle(color: (_selectedTab == 4) ? Colors.white : Colors.grey),
                           ),
                         ),
@@ -295,7 +321,7 @@ class _ReviewsPageState extends State<ReviewsPage> with TickerProviderStateMixin
                         Container(
                           margin: EdgeInsets.only(left: 4),
                           child: Text(
-                            '5 (2)',
+                            '5 (${fiveStar.length})',
                             style: TextStyle(color: (_selectedTab == 5) ? Colors.white : Colors.grey),
                           ),
                         ),
@@ -327,11 +353,46 @@ class _ReviewsPageState extends State<ReviewsPage> with TickerProviderStateMixin
                   separatorBuilder: (context, index) => SizedBox(height: 16),
                   itemCount: widget.reviews.length,
                 ),
-                SizedBox(),
-                SizedBox(),
-                SizedBox(),
-                SizedBox(),
-                SizedBox(),
+                ListView.separated(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) => ReviewTile(review: oneStar[index]),
+                  separatorBuilder: (context, index) => SizedBox(height: 16),
+                  itemCount: oneStar.length,
+                ),
+                ListView.separated(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) => ReviewTile(review: twoStar[index]),
+                  separatorBuilder: (context, index) => SizedBox(height: 16),
+                  itemCount: twoStar.length,
+                ),
+                ListView.separated(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) => ReviewTile(review: threeStar[index]),
+                  separatorBuilder: (context, index) => SizedBox(height: 16),
+                  itemCount: threeStar.length,
+                ),
+                ListView.separated(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) => ReviewTile(review: fourStar[index]),
+                  separatorBuilder: (context, index) => SizedBox(height: 16),
+                  itemCount: fourStar.length,
+                ),
+                ListView.separated(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) => ReviewTile(review: fiveStar[index]),
+                  separatorBuilder: (context, index) => SizedBox(height: 16),
+                  itemCount: fiveStar.length,
+                ),
               ],
             )
           ],

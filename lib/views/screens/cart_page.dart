@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:marketky/constant/app_color.dart';
 import 'package:marketky/core/model/Cart.dart';
 import 'package:marketky/core/model/Product.dart';
+import 'package:marketky/views/screens/edit_profile.dart';
 import 'package:marketky/views/screens/order_success_page.dart';
 import '../../constant/idr_currency.dart';
 import '../../main.dart';
@@ -311,7 +312,9 @@ class _CartPageState extends State<CartPage> {
                                 style: TextStyle(fontSize: 14, fontFamily: 'poppins', fontWeight: FontWeight.w600, color: AppColor.secondary),
                               ),
                               ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => EditProfile()));
+                                },
                                 child: SvgPicture.asset(
                                   'assets/icons/Pencil.svg',
                                   width: 16,
@@ -420,7 +423,7 @@ class _CartPageState extends State<CartPage> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text('Detail Pemesanan', style: TextStyle(color: AppColor.secondary.withOpacity(0.7), fontSize: 10)),
-                                  Text('Pengiriman', style: TextStyle(color: AppColor.secondary, fontWeight: FontWeight.w600, fontFamily: 'poppins')),
+                                  Text('Pengiriman (JNE)', style: TextStyle(color: AppColor.secondary, fontWeight: FontWeight.w600, fontFamily: 'poppins')),
                                 ],
                               ),
                               Text('Gratis', style: TextStyle(color: AppColor.primary, fontWeight: FontWeight.w600)),

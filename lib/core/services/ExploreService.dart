@@ -27,16 +27,16 @@ var listExploreItemRawData = [
 
 var listExploreUpdateItemRawData = [
   {
-    'logo_url': 'assets/images/zaralogo.jpg',
-    'image': 'assets/images/update1.jpg',
+    'logo_url': 'assets/images/ktoys_info.jpg',
+    'image': 'assets/images/ktoys_info.jpg',
     'store_name': 'KTOYS STORE',
-    'caption': 'The jacket is quite soft on the inside. Rib hem collar. Long sleeves, elastic cuffs. Various paspoil pockets on the hips and pocket details on the inside.',
+    'caption': 'Toko mainan KToys menyediakan mainan berbagai macan ukuran dan berbagai macam fariasi dengan harga yang sangat terjangkau untuk kalangan menengah kebawah.Toko mainan KToys menyediakan mainan berbagai macan ukuran dan berbagai macam fariasi dengan harga yang sangat terjangkau untuk kalangan menengah kebawah.',
   },
   {
-    'logo_url': 'assets/images/nikelogo.jpg',
-    'image': 'assets/images/update2.jpg',
+    'logo_url': 'assets/images/ktoys_info.jpg',
+    'image': 'assets/images/toko_fisik.jpeg',
     'store_name': 'KTOYS STORE',
     'caption':
-        'Suit up like the pros in the Brooklyn Nets City Edition Swingman Shorts. Made from smooth, lightweight fabric with sweat-wicking technology, they have authentic team colours and details that match what the players wear during games. This product is made from 100% recycled polyester fibres.',
+        'Usaha toko mainan Ktoys Bekasi berdiri pada tahun Januari 2019, yang di dirikan oleh pak Rio Nugroho. Berlokasi di Bakti Jaya Raya No.1, RT.005/RW.024, Harapan Jaya, Kec. Bekasi Utara, Kota Bekasi, Jawa Barat.',
   },
 ];

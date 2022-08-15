@@ -6,7 +6,6 @@ import 'package:marketky/constant/app_color.dart';
 import 'package:marketky/views/screens/penjual/dashboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:marketky/views/screens/login_page.dart';
-//import 'package:marketky/views/screens/otp_verification_page.dart';
 
 import '../../main.dart';
 import 'home_page.dart';
@@ -131,7 +130,7 @@ class _LoginPageState extends State<RegisterPage> {
             controller: _namaPengguna,
             autofocus: false,
             decoration: InputDecoration(
-              hintText: 'Nama Pengguna',
+              hintText: 'Username',
               prefixIcon: Container(
                 padding: EdgeInsets.all(12),
                 child: Text('@', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: AppColor.primary)),

@@ -24,7 +24,7 @@ class _MessagePageState extends State<MessagePage> {
         title: Column(
           children: [
             Text('Pesan', style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600)),
-            Text('1 Belum dibaca', style: TextStyle(fontSize: 10, color: Colors.black.withOpacity(0.7))),
+            Text('Kirim pesan untuk admin', style: TextStyle(fontSize: 10, color: Colors.black.withOpacity(0.7))),
           ],
         ),
         leading: IconButton(

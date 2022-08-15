@@ -53,7 +53,7 @@ class _FeedsPageState extends State<FeedsPage> with TickerProviderStateMixin {
               unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w400, fontFamily: 'poppins'),
               tabs: [
                 Tab(
-                  text: 'Pembaruan',
+                  text: 'Informasi KTOYS',
                 ),
               ],
             ),

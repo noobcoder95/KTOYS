@@ -27,47 +27,11 @@ class _NotificationPageState extends State<NotificationPage> {
         physics: BouncingScrollPhysics(),
         children: [
           GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => InfoKtoys()));
-            },
             child: Container(
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               decoration: BoxDecoration(
                 border: Border(bottom: BorderSide(color: AppColor.primarySoft, width: 1)),
-              ),
-              child: Row(
-                children: [
-                  // Icon Box
-                  Container(
-                    width: 46,
-                    height: 46,
-                    padding: EdgeInsets.all(10),
-                    margin: EdgeInsets.only(right: 16),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: SvgPicture.asset(
-                      'assets/icons/Info Square.svg',
-                      color: AppColor.secondary.withOpacity(0.5),
-                    ),
-                  ),
-                  // Info
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Info KTOYS', style: TextStyle(color: AppColor.secondary, fontFamily: 'poppins', fontWeight: FontWeight.w500)),
-                        SizedBox(height: 2),
-                        Text('Lihat lebih jauh mengenai KTOYS', style: TextStyle(color: AppColor.secondary.withOpacity(0.7), fontSize: 12)),
-                      ],
-                    )
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    color: AppColor.border,
-                  ),
-                ],
               ),
             ),
           ),

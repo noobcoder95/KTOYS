@@ -94,26 +94,7 @@ class _AddProductState extends State<AddProduct> {
                     'store_id': auth.currentUser!.uid,
                     'colors': colors,
                     'sizes': sizes,
-                    'reviews': [
-                      {
-                        'photo_url': 'assets/images/avatar1.jpg',
-                        'name': 'Uchiha Sasuke',
-                        'review': 'Bringing a new look to the Waffle sneaker family, the Nike Waffle One balances everything you love about heritage Nike running with fresh innovations.',
-                        'rating': 4.0,
-                      },
-                      {
-                        'photo_url': 'assets/images/avatar2.jpg',
-                        'name': 'Uzumaki Naruto',
-                        'review': 'Bringing a new look to the Waffle sneaker family, the Nike Waffle One balances everything you love about heritage Nike running with fresh innovations.',
-                        'rating': 4.0,
-                      },
-                      {
-                        'photo_url': 'assets/images/avatar3.jpg',
-                        'name': 'Kurokooo Tetsuya',
-                        'review': 'Bringing a new look to the Waffle sneaker family, the Nike Waffle One balances everything you love about heritage Nike running with fresh innovations.',
-                        'rating': 4.0,
-                      },
-                    ]
+                    'reviews': []
                   }).then((value) => Navigator.of(context).pop());
                 }
               }
@@ -552,7 +533,7 @@ class _AddProductState extends State<AddProduct> {
   void snackBar(String text)
   {
     final snackBar = SnackBar(
-      backgroundColor: Color(0xff029bd7),
+      backgroundColor: AppColor.primary,
       content: Text('$text'),
       duration: Duration(seconds: 3),
     );

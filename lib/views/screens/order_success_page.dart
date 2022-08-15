@@ -83,7 +83,7 @@ class OrderSuccessPage extends StatelessWidget {
             Container(
               margin: EdgeInsets.only(top: 8),
               child: Text(
-                'Kami menerima pesananmu',
+                'Harap melakukan pembayaran pada \n Bank BCA 3420122542 \n A/N Ramadhan Alfaruqi \n dan kirim bukti pembayaran pada nomor \n 0851-5855-1280',
                 style: TextStyle(color: AppColor.secondary.withOpacity(0.8)),
                 textAlign: TextAlign.center,
               ),

@@ -24,7 +24,7 @@ class ReviewTile extends StatelessWidget {
               color: Colors.grey,
               borderRadius: BorderRadius.circular(100),
               image: DecorationImage(
-                image: AssetImage('${review.photoUrl}'),
+                image: NetworkImage('${review.photoUrl}'),
                 fit: BoxFit.cover,
               ),
             ),
